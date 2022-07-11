@@ -5,6 +5,7 @@ import com.zay.service.HelloWorldService;
 import com.zay.test01.Coffee;
 import com.zay.test01.CoffeeFactory;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @ResponseBody
 @RequestMapping("/hello")
 @AllArgsConstructor
+@Slf4j
 public class HelloWorldController {
 
     HelloWorldService helloWorldService;
@@ -39,7 +41,8 @@ public class HelloWorldController {
     @RequestMapping("test03")
     public Integer test03(String type) {
         Coffee coffee = CoffeeFactory.buildCoffee(Integer.parseInt(type));
-        System.out.println(coffee.getPrice());
+        log.info("获取coffee价格：" + coffee.getPrice());
+        log.error("获取coffee价格：" + coffee.getPrice());
         return coffee.getPrice();
     }
 
