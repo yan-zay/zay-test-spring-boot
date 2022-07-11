@@ -41,8 +41,8 @@ public class HelloWorldController {
     @RequestMapping("test03")
     public Integer test03(String type) {
         Coffee coffee = CoffeeFactory.buildCoffee(Integer.parseInt(type));
-        log.info("获取coffee价格：" + coffee.getPrice());
-        log.error("获取coffee价格：" + coffee.getPrice());
+        log.info("获取coffee价格 info：" + coffee.getPrice());
+        log.error("获取coffee价格 err：" + coffee.getPrice());
         return coffee.getPrice();
     }
 
