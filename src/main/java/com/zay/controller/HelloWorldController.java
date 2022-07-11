@@ -4,6 +4,7 @@ import com.zay.pojo.R;
 import com.zay.service.HelloWorldService;
 import com.zay.test01.Coffee;
 import com.zay.test01.CoffeeFactory;
+import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -39,6 +40,7 @@ public class HelloWorldController {
     }
 
     @RequestMapping("test03")
+    @ApiOperation("工厂模式+策略模式")
     public Integer test03(String type) {
         Coffee coffee = CoffeeFactory.buildCoffee(Integer.parseInt(type));
         log.info("获取coffee价格：" + coffee.getPrice());
