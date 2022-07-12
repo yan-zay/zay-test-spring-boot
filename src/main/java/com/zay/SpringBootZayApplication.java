@@ -4,24 +4,19 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Timer;
 
 /**
  * @author zay
  * @date 2021/6/2 15:15
  */
 @SpringBootApplication
-public class SpringBoot {
+public class SpringBootZayApplication {
     public static void main(String[] args) throws ParseException {
         /*int a = 3;
         int b = 8;
         int i = a / b;
         System.out.println(i);*/
-                SpringApplication.run(SpringBoot.class,args);
+                SpringApplication.run(SpringBootZayApplication.class,args);
 
 /*        for (int i = 0; i < 24; i++) {
             if(i<10){
