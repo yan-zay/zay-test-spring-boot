@@ -7,7 +7,6 @@ import java.math.BigDecimal;
 /**
  * @Author: ZhouAnYan
  * @Date: 2022/1/12 10:48
- * @Version 1.0
  */
 @Data
 public class AnnotationVO {

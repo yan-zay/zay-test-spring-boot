@@ -5,7 +5,6 @@ import com.alibaba.fastjson2.JSONObject;
 /**
  * @Author: ZhouAnYan
  * @Date: 2021/12/24 15:50
- * @Version 1.0
  */
 public class User01 {
 

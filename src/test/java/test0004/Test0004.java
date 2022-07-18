@@ -6,7 +6,6 @@ import test0003.User0003;
 /**
  * @Author: ZhouAnYan
  * @Date: 2022-07-11 9:21
- * @Version 1.0
  */
 public class Test0004 {
 

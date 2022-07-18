@@ -4,7 +4,6 @@ package com.zay.constants;
  * 存QueryAPIUtils   常量
  * @Author: ZhouAnYan
  * @Date: 2021/12/23 17:26
- * @Version 1.0
  */
 public interface QueryAPIConstants {
 

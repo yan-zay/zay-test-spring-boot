@@ -6,7 +6,6 @@ import org.springframework.stereotype.Component;
 /**
  * @Author: ZhouAnYan
  * @Date: 2022-07-11 10:00
- * @Version 1.0
  */
 @Component
 public class Latte implements Coffee, InitializingBean {

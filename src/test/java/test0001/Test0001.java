@@ -7,7 +7,6 @@ import org.junit.Test;
 /**
  * @Author: ZhouAnYan
  * @Date: 2021/12/24 15:33
- * @Version 1.0
  */
 public class Test0001 {
 

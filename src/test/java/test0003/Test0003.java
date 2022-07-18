@@ -14,7 +14,6 @@ import java.util.List;
 /**
  * @Author: ZhouAnYan
  * @Date: 2022/2/17 15:38
- * @Version 1.0
  */
 public class Test0003 {
 
@@ -40,7 +39,7 @@ public class Test0003 {
         List<Object> aa = aa(new ArrayList<User0003>());
     }
 
-    
+
     public <T> List<T> aa(List<? extends User0003> list) {
         return null;
     }

@@ -4,7 +4,6 @@ package com.zay.constants;
  * Query请求对象常量
  * @Author: ZhouAnYan
  * @Date: 2022/1/14 11:00
- * @Version 1.2
  */
 public interface QueryConstants {
     /** 统计周期 日/月/周 */

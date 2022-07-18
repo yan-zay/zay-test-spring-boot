@@ -16,8 +16,8 @@ import java.util.function.BiFunction;*//*
 /**
  * @Author: ZhouAnYan
  * @Date: 2022-03-30 20:25
- * @Version 1.0
- *//*
+ */
+/*
 
 public interface BodyHandlerFunction extends
         BiFunction<ServerHttpResponse, Publisher<? extends DataBuffer>, Mono<Void>> {

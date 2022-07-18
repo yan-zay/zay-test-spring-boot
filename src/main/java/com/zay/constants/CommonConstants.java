@@ -4,7 +4,6 @@ package com.zay.constants;
  * 公共的常量
  * @Author: ZhouAnYan
  * @Date: 2022/01/11 15:35
- * @Version 1.0
  */
 public interface CommonConstants {
 

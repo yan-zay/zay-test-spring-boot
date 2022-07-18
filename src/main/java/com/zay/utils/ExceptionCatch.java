@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 /**
  * @Author: ZhouAnYan
  * @Date: 2022-03-30 17:59
- * @Version 1.0
  */
 @ControllerAdvice//控制器增强
 @Log4j2

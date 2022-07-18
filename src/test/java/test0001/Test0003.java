@@ -14,7 +14,6 @@ import java.util.*;
 /**
  * @Author: ZhouAnYan
  * @Date: 2021/12/28 10:40
- * @Version 1.0
  */
 public class Test0003 {
 

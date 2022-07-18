@@ -12,7 +12,6 @@ import java.io.Serializable;
  * 响应信息主体
  * @Author: ZhouAnYan
  * @Date: 2022/01/11 15:35
- * @Version 1.0
  */
 @Builder
 @ToString

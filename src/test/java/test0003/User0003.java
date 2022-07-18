@@ -3,7 +3,6 @@ package test0003;
 /**
  * @Author: ZhouAnYan
  * @Date: 2022/2/17 15:39
- * @Version 1.0
  */
 @Ann02(name="0022")
 public class User0003 {

@@ -5,7 +5,6 @@ import java.math.BigDecimal;
 /**
  * @Author: ZhouAnYan
  * @Date: 2022/1/6 18:38
- * @Version 1.1
  */
 public class CommonUtils {
 

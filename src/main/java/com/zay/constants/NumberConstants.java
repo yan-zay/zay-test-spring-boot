@@ -3,7 +3,6 @@ package com.zay.constants;
 /**
  * @Author: ZhouAnYan
  * @Date: 2022/2/17 17:46
- * @Version 1.0
  */
 public interface NumberConstants {
     /** 精确到小数位  */
