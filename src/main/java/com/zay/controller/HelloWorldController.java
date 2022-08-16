@@ -1,15 +1,29 @@
 package com.zay.controller;
 
+import com.zay.entity.StudentEntity;
+import com.zay.factory.LeagueRule;
+import com.zay.factory.LeagueRuleFactory;
+import com.zay.factory.LeagueRuleTemplate;
+import com.zay.mapper.StudentMapper;
 import com.zay.pojo.R;
 import com.zay.service.HelloWorldService;
 import com.zay.test01.Coffee;
 import com.zay.test01.CoffeeFactory;
+import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.util.Date;
 
 /**
  * @author zay
@@ -23,6 +37,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class HelloWorldController {
 
     HelloWorldService helloWorldService;
+    StudentMapper studentMapper;
 
     @RequestMapping("helloWorld")
     public String helloWorld(String id) {
@@ -51,5 +66,41 @@ public class HelloWorldController {
     @RequestMapping("test04")
     public R test04(String type) {
         return helloWorldService.getAllStudent(type);
+    }
+
+    @RequestMapping("test05")
+    public R test05(String type) {
+        StudentEntity stu = new StudentEntity();
+        stu.setName(type);
+        stu.setCreateTime(new Date());
+        stu.setUpdateTime(new Date());
+        int insert = studentMapper.insert(stu);
+        log.info("insert" + insert);
+        return R.ok();
+    }
+
+    @RequestMapping("test06")
+    public R test06(String type) {
+        String UTC_FORMATTER_PATTERN = "yyyy-MM-dd HH:mm:ss";
+        DateTimeFormatter fmt = DateTimeFormat.forPattern(UTC_FORMATTER_PATTERN);
+        DateTime now = DateTime.now(DateTimeZone.UTC);
+        String nowStr = fmt.print(now);
+
+//        Date date = new Date();
+        log.info("nowStr" + nowStr);
+        return R.ok(nowStr);
+    }
+
+    @PostMapping("/test07")
+    @ApiOperation("测试任务")
+    @ApiImplicitParam(name = "id", value = "公会id", required = true, example = "1024", dataTypeClass = Long.class)
+    public R test07(@RequestBody LeagueTaskRequestVO vo) {
+//        leagueRuleService.test(id);
+        System.out.println("");
+        LeagueRuleTemplate leagueRuleTemplate = LeagueRuleFactory.buildLeagueRule(1);
+//        leagueRuleTemplate.
+//        leagueRule
+//        leagueRule.
+        return R.ok("");
     }
 }

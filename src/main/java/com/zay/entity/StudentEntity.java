@@ -1,7 +1,11 @@
 package com.zay.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
+
+import java.util.Date;
 
 /**
  * @Author: ZhouAnYan
@@ -10,8 +14,11 @@ import lombok.Data;
 @Data
 @TableName("student")
 public class StudentEntity {
-    private String id;
+    @TableId(type = IdType.AUTO)
+    private Long id;
     private String name;
     private String sex;
     private String age;
+    private Date createTime;
+    private Date updateTime;
 }
