@@ -18,12 +18,11 @@ import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.Date;
+import java.util.Objects;
 
 /**
  * @author zay
@@ -98,9 +97,35 @@ public class HelloWorldController {
 //        leagueRuleService.test(id);
         System.out.println("");
         LeagueRuleTemplate leagueRuleTemplate = LeagueRuleFactory.buildLeagueRule(1);
-//        leagueRuleTemplate.
-//        leagueRule
-//        leagueRule.
-        return R.ok("");
+        return R.ok(leagueRuleTemplate);
+    }
+
+    @GetMapping("/test08")
+    public R test08(String type) {
+        System.out.println(type);
+        return R.ok(type);
+    }
+
+    @PostMapping("/test09")
+    public R test09(@RequestBody LeagueRuleVO vo) {
+        return checkLeagueRule(vo);
+    }
+
+    private R checkLeagueRule(LeagueRuleVO vo) {
+        if (Objects.isNull(vo.getEnabledAuth())) {
+            return R.failed("非法参数1");
+        }
+        if (!(vo.getEnabledAuth()
+                && vo.getAuthPrice().compareTo(BigDecimal.ZERO) >= 0 && vo.getAuthPrice().doubleValue()%100==0)) {
+            return R.failed("非法参数2");
+        }
+        if (vo.getReportPrice().compareTo(new BigDecimal(10)) < 0) {
+            return R.failed("非法参数3");
+        }
+        if (vo.getChatPrice().compareTo(new BigDecimal(10)) < 0) {
+            return R.failed("非法参数4");
+        }
+        BigDecimal base = new BigDecimal(10L);
+        return R.ok("", "执行成功");
     }
 }
