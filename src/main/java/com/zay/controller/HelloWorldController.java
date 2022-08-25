@@ -38,12 +38,12 @@ public class HelloWorldController {
     HelloWorldService helloWorldService;
     StudentMapper studentMapper;
 
-    @RequestMapping("helloWorld")
+    @GetMapping("helloWorld")
     public String helloWorld(String id) {
         return "HelloWorld!321, 我是葫芦娃的大娃！" + id;
     }
 
-    @RequestMapping("test01")
+    @GetMapping("test01")
     public String test01(String test01) {
         System.out.println("test01 0001");
         if (true) {
@@ -53,7 +53,7 @@ public class HelloWorldController {
         return "HelloWorld!321, 我是葫芦娃的大娃！";
     }
 
-    @RequestMapping("test03")
+    @GetMapping("test03")
     @ApiOperation("工厂模式+策略模式")
     public Integer test03(String type) {
         Coffee coffee = CoffeeFactory.buildCoffee(Integer.parseInt(type));
@@ -62,12 +62,12 @@ public class HelloWorldController {
         return coffee.getPrice();
     }
 
-    @RequestMapping("test04")
+    @GetMapping("test04")
     public R test04(String type) {
         return helloWorldService.getAllStudent(type);
     }
 
-    @RequestMapping("test05")
+    @GetMapping("test05")
     public R test05(String type) {
         StudentEntity stu = new StudentEntity();
         stu.setName(type);
@@ -78,7 +78,7 @@ public class HelloWorldController {
         return R.ok();
     }
 
-    @RequestMapping("test06")
+    @GetMapping("test06")
     public R test06(String type) {
         String UTC_FORMATTER_PATTERN = "yyyy-MM-dd HH:mm:ss";
         DateTimeFormatter fmt = DateTimeFormat.forPattern(UTC_FORMATTER_PATTERN);
