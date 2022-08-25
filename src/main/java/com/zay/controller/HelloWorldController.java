@@ -111,21 +111,33 @@ public class HelloWorldController {
         return checkLeagueRule(vo);
     }
 
+    /**
+     * 校验公会规则参数
+     * @param vo
+     */
     private R checkLeagueRule(LeagueRuleVO vo) {
-        if (Objects.isNull(vo.getEnabledAuth())) {
-            return R.failed("非法参数1");
+        //必传参数不能为空
+        if (Objects.isNull(vo.getEnabledAuth()) || Objects.isNull(vo.getReportPrice()) || Objects.isNull(vo.getChatPrice())) {
+            return R.failed("非法参数 111");
         }
-        if (!(vo.getEnabledAuth()
-                && vo.getAuthPrice().compareTo(BigDecimal.ZERO) >= 0 && vo.getAuthPrice().doubleValue()%100==0)) {
-            return R.failed("非法参数2");
+        BigDecimal authPrice = vo.getAuthPrice();
+        //公会认证价格为0 或 大于100且是100的整数倍
+        if (vo.getEnabledAuth()) {
+            if (Objects.isNull(authPrice)) {
+                return R.failed("非法参数 222");
+            }
+            if (authPrice.compareTo(BigDecimal.ZERO) < 0 || authPrice.doubleValue()%10 != 0) {
+                return R.failed("非法参数 333");
+            }
         }
+        //推荐报告价格大于10
         if (vo.getReportPrice().compareTo(new BigDecimal(10)) < 0) {
-            return R.failed("非法参数3");
+            return R.failed("非法参数 444");
         }
+        //聊天价格大于10
         if (vo.getChatPrice().compareTo(new BigDecimal(10)) < 0) {
-            return R.failed("非法参数4");
+            return R.failed("非法参数 555");
         }
-        BigDecimal base = new BigDecimal(10L);
-        return R.ok("", "执行成功");
+        return R.ok();
     }
 }
