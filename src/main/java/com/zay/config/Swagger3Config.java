@@ -24,9 +24,12 @@ import java.util.ArrayList;
 @EnableOpenApi
 public class Swagger3Config {
 
+    private static final String dev = "dev";
+    private static final String sit = "sit";
+
     @Bean
     public Docket docket(Environment environment){
-        Profiles profiles = Profiles.of("dev", "sit"); // 设置要显示swagger的环境
+        Profiles profiles = Profiles.of(dev, sit); // 设置要显示swagger的环境
         boolean enableSwagger = environment.acceptsProfiles(profiles); // 判断当前是否处于该环境
         return new Docket(DocumentationType.OAS_30)
                 //是否开启Swagger   根据配置文件环境判断
