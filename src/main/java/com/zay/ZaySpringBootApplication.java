@@ -1,5 +1,6 @@
 package com.zay;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -8,8 +9,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @date 2021/6/2 15:15
  */
 @SpringBootApplication
-public class SpringBootZayApplication {
+@Slf4j
+public class ZaySpringBootApplication {
+
     public static void main(String[] args) {
-        SpringApplication.run(SpringBootZayApplication.class, args);
+        SpringApplication.run(ZaySpringBootApplication.class, args);
     }
 }
