@@ -1,15 +1,11 @@
 package com.zay.controller;
 
 import com.zay.entity.StudentEntity;
-import com.zay.factory.LeagueRule;
-import com.zay.factory.LeagueRuleFactory;
-import com.zay.factory.LeagueRuleTemplate;
 import com.zay.mapper.StudentMapper;
 import com.zay.pojo.R;
 import com.zay.service.HelloWorldService;
 import com.zay.test01.Coffee;
 import com.zay.test01.CoffeeFactory;
-import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -88,16 +84,6 @@ public class HelloWorldController {
 //        Date date = new Date();
         log.info("nowStr" + nowStr);
         return R.ok(nowStr);
-    }
-
-    @PostMapping("/test07")
-    @ApiOperation("测试任务")
-    @ApiImplicitParam(name = "id", value = "公会id", required = true, example = "1024", dataTypeClass = Long.class)
-    public R test07(@RequestBody LeagueTaskRequestVO vo) {
-//        leagueRuleService.test(id);
-        System.out.println("");
-        LeagueRuleTemplate leagueRuleTemplate = LeagueRuleFactory.buildLeagueRule(1);
-        return R.ok(leagueRuleTemplate);
     }
 
     @GetMapping("/test08")
