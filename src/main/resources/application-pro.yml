@@ -1,0 +1,6 @@
+# 配置端口
+server:
+  port: 61104
+
+swagger:
+  enable: false
