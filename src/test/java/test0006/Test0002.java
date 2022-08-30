@@ -54,4 +54,12 @@ public class Test0002 {
         BeanUtils.copyProperties(u2, u1, MyBeanUtils.getNullPropertyNames(u2));
         System.out.println();
     }
+
+    @Test
+    public void test6() {
+        long a = 123456;
+        Long b = new Long(123456);
+        System.out.println(a == b);
+        System.out.println();
+    }
 }

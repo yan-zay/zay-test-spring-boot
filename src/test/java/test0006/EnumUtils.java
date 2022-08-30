@@ -8,6 +8,7 @@ import java.util.function.Function;
  * @Author: ZhouAnYan
  * @Email: yan_zay@163.com
  * @Date: 2022-08-11 11:05
+ * @Version: 1.0  增强版（做了缓存，懒加载）  可迭代无注解版，向下兼容 或自定义key名版本
  */
 public class EnumUtils {
     /**
