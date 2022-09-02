@@ -1,21 +1,22 @@
-package com.zay.test01;
+package com.zay.factory;
 
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Component;
 
 /**
  * @Author: ZhouAnYan
- * @Date: 2022-07-11 10:00
+ * @Date: 2022-07-11 9:56
  */
 @Component
-public class Latte implements Coffee, InitializingBean {
+public class Cappuccino implements Coffee, InitializingBean {
+
     @Override
     public int getPrice() {
-        return 6;
+        return 2;
     }
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        CoffeeFactory.register(3,this);
+        CoffeeFactory.register(1,this);
     }
 }

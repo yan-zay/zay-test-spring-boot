@@ -1,4 +1,4 @@
-package com.zay.test01;
+package com.zay.factory;
 
 import java.util.HashMap;
 import java.util.Map;
