@@ -24,19 +24,19 @@ public class RedissonUtils {
     /**
      * 可重入锁
      * 迭代版本：可重载抛出自定义异常
-     * @param lockKey   key
-     * @param sup   Function
-     * @param <R>   自定义返回值
-     * @return  自定义返回值
+     * @param lockKey key
+     * @param sup     Function
+     * @param <R>     自定义返回值
+     * @return 自定义返回值
      * @throws InterruptedException
      */
-    private  <R> R tryLock(String lockKey, long waitTime, long leaseTime, TimeUnit unit, Supplier<R> sup, String e) throws InterruptedException {
+    private <R> R tryLock(String lockKey, long waitTime, long leaseTime, TimeUnit unit, Supplier<R> sup, String e) throws InterruptedException {
         RLock lock = redissonClient.getLock(lockKey);
         // 尝试加锁，最多等待30秒，上锁以后10秒自动解锁
         boolean res = lock.tryLock(waitTime, leaseTime, unit);
         if (res) {
             try {
-                log.info(Thread.currentThread().getId() + ",我抢到了一个锁."+lockKey);
+                log.info(Thread.currentThread().getId() + ",我抢到了一个锁." + lockKey);
                 return sup.get();
             } finally {
                 lock.unlock();
@@ -47,6 +47,6 @@ public class RedissonUtils {
     }
 
     public <R> R tryLock(String lockKey, Supplier<R> sup) throws InterruptedException {
-        return tryLock(lockKey,30, 10, TimeUnit.SECONDS, sup, "没抢到锁 抛出一个异常");
+        return tryLock(lockKey, 30, 10, TimeUnit.SECONDS, sup, "没抢到锁 抛出一个异常");
     }
 }
