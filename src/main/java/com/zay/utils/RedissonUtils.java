@@ -36,7 +36,7 @@ public class RedissonUtils {
         boolean res = lock.tryLock(30, 10, TimeUnit.SECONDS);
         if (res) {
             try {
-                System.out.println(Thread.currentThread().getId() + ",我抢到了一个锁！"+ lockKey);
+                log.info(Thread.currentThread().getId() + ",我抢到了一个锁."+lockKey);
                 return sup.get();
             } finally {
                 lock.unlock();

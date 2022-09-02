@@ -54,17 +54,23 @@ public class RedissonController {
         test0304("04");
         return "test04";
     }
+
+    /**
+     * 10秒到期释放锁
+     * @param str
+     * @throws InterruptedException
+     */
     public void test0304(String str) throws InterruptedException {
         //1、获取一把锁，只要锁的名字一样，就是同一把锁
         RLock lock = redissonClient.getLock("my-lock");
         // 尝试加锁，最多等待30秒，上锁以后10秒自动解锁
-        boolean res = lock.tryLock(3, 10, TimeUnit.SECONDS);
+        boolean res = lock.tryLock(30, 10, TimeUnit.SECONDS);
         if (res) {
             try {
-                System.out.println(Thread.currentThread().getId() + ",我抢到了一个锁！"+str);
+                log.info(Thread.currentThread().getId() + ",我抢到了一个锁."+str);
                 Thread.sleep(5000);
             } finally {
-                System.out.println("释放锁...."+Thread.currentThread().getId());
+                log.info(Thread.currentThread().getId() + "释放锁");
                 lock.unlock();
             }
         }
