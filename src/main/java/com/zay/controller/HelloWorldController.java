@@ -134,77 +134,11 @@ public class HelloWorldController {
     }
 
     @Resource
-    private RedisUtils redisUtils;
-    @Resource
-    private RedissonClient redissonClient;
-
+    RedisUtils redisUtils;
     @GetMapping("/test10")
     public R test10(String str) {
         String result = redisUtils.get(str);
         System.out.println(result);
         return R.ok(result);
-    }
-
-    @GetMapping("/test11")
-    public R test11(String str) throws InterruptedException {
-        zay01(str,"1");
-        return R.ok();
-    }
-    @GetMapping("/test12")
-    public R test12(String str) throws InterruptedException {
-        zay01(str,"2");
-        return R.ok();
-    }
-
-    /**
-     * 可重入锁
-     * @param str
-     * @param str2
-     * @throws InterruptedException
-     */
-    private void zay01(String str, String str2) throws InterruptedException {
-        RLock lock = redissonClient.getLock(str);
-        // 最常见的使用方法
-//        lock.lock();
-        // 尝试加锁，最多等待100秒，上锁以后10秒自动解锁
-        boolean res = lock.tryLock(100, 6, TimeUnit.SECONDS);
-        if (res) {
-            try {
-                System.out.println(Thread.currentThread().getId() + ","+str2+",我抢到了一个锁！"+ str);
-//                Thread.sleep(15000);
-            } finally {
-                System.out.println("执行到了");
-//                lock.unlock();
-            }
-        }
-    }
-
-    @GetMapping("/test13")
-    public R test13(String str) throws InterruptedException {
-        zay02(str);
-        return R.ok();
-    }
-    private void zay02(String str) throws InterruptedException {
-        RLock lock = redissonClient.getLock(str);
-        // 最常见的使用方法
-        lock.lock(20, TimeUnit.SECONDS);
-        System.out.println(Thread.currentThread().getId()+"执行到了");
-    }
-
-    @Resource
-    RedissonUtils redissonUtils;
-    @GetMapping("/test14")
-    public R test14(String str) throws InterruptedException {
-        return redissonUtils.tryLock(str, () -> {
-            System.out.println("我反手就执行一个方法14");
-            return R.ok();
-        });
-    }
-    @GetMapping("/test15")
-    public R test15(String str) throws InterruptedException {
-        return redissonUtils.tryLock(str, () -> {
-            System.out.println("我反手就执行一个方法15");
-            return R.ok();
-        });
     }
 }
