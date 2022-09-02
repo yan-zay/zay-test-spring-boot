@@ -30,10 +30,10 @@ public class RedissonUtils {
      * @return  自定义返回值
      * @throws InterruptedException
      */
-    public <R> R tryLock(String lockKey, Supplier<R> sup) throws InterruptedException {
+    private  <R> R tryLock(String lockKey, long waitTime, long leaseTime, TimeUnit unit, Supplier<R> sup, String e) throws InterruptedException {
         RLock lock = redissonClient.getLock(lockKey);
         // 尝试加锁，最多等待30秒，上锁以后10秒自动解锁
-        boolean res = lock.tryLock(30, 10, TimeUnit.SECONDS);
+        boolean res = lock.tryLock(waitTime, leaseTime, unit);
         if (res) {
             try {
                 log.info(Thread.currentThread().getId() + ",我抢到了一个锁."+lockKey);
@@ -43,6 +43,10 @@ public class RedissonUtils {
             }
         }
         log.info("没抢到锁,当前线程:{},lockKey:{}", Thread.currentThread().getId(), lockKey);
-        throw new RuntimeException("没抢到锁 抛出一个异常");
+        throw new RuntimeException(e);
+    }
+
+    public <R> R tryLock(String lockKey, Supplier<R> sup) throws InterruptedException {
+        return tryLock(lockKey,30, 10, TimeUnit.SECONDS, sup, "没抢到锁 抛出一个异常");
     }
 }

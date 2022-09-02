@@ -75,4 +75,13 @@ public class RedissonController {
             }
         }
     }
+
+    @GetMapping("/test05")
+    public String test05() throws InterruptedException {
+        new Thread(() -> {
+
+        }).start();
+//        test0304("04");
+        return "test05";
+    }
 }
