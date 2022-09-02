@@ -29,7 +29,7 @@ public class RedissonUtils {
     public <R> R tryLock(String lockKey, Supplier<R> sup) throws InterruptedException {
         RLock lock = redissonClient.getLock(lockKey);
         // 尝试加锁，最多等待30秒，上锁以后10秒自动解锁
-        boolean res = lock.tryLock(1, 10, TimeUnit.SECONDS);
+        boolean res = lock.tryLock(30, 10, TimeUnit.SECONDS);
         if (res) {
             try {
                 System.out.println(Thread.currentThread().getId() + ",我抢到了一个锁！"+ lockKey);
