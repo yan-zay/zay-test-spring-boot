@@ -23,7 +23,11 @@ public class RedissonUtils {
 
     /**
      * 可重入锁
-     * @param
+     * 迭代版本：可重载抛出自定义异常
+     * @param lockKey   key
+     * @param sup   Function
+     * @param <R>   自定义返回值
+     * @return  自定义返回值
      * @throws InterruptedException
      */
     public <R> R tryLock(String lockKey, Supplier<R> sup) throws InterruptedException {
@@ -39,6 +43,6 @@ public class RedissonUtils {
             }
         }
         log.info("没抢到锁,当前线程:{},lockKey:{}", Thread.currentThread().getId(), lockKey);
-        throw new RuntimeException("没抢到锁 111111111111111111111111111111");
+        throw new RuntimeException("没抢到锁 抛出一个异常");
     }
 }
