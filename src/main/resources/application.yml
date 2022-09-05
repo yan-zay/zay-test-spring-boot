@@ -22,6 +22,11 @@ spring:
     database: 1
     timeout: 5000
 
+  redisson:
+    lock:
+      wait-time: 30
+      lease-time: 10
+
 #  #  数据库配置
 #  datasource:
 #    type: com.alibaba.druid.pool.DruidDataSource
