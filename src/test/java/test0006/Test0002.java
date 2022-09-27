@@ -7,6 +7,8 @@ import test0004.User09;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @Author: ZhouAnYan
@@ -60,6 +62,16 @@ public class Test0002 {
         long a = 123456;
         Long b = new Long(123456);
         System.out.println(a == b);
+        System.out.println();
+    }
+
+    private static Map<DayEnum, String> map = new HashMap<>();
+
+    @Test
+    public void test7() {
+        map.put(DayEnum.DAY_1,"1");
+        map.put(DayEnum.DAY_3,"3");
+        System.out.println();
         System.out.println();
     }
 }
