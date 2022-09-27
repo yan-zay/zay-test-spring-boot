@@ -1,4 +1,4 @@
-package test0004;
+package factory;
 
 /**
  * @Author: ZhouAnYan
