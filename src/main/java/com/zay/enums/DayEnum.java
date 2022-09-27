@@ -1,7 +1,8 @@
-package test0006;
+package com.zay.enums;
 
 import com.baomidou.mybatisplus.annotation.EnumValue;
 import com.fasterxml.jackson.annotation.JsonValue;
+import com.zay.utils.EnumKey;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

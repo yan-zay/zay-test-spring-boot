@@ -1,4 +1,4 @@
-package test0006;
+package com.zay.utils;
 
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;

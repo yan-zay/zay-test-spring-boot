@@ -1,4 +1,4 @@
-package test0006;
+package com.zay.utils;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
