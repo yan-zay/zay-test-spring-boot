@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Supplier;
 
 /**
  * @Author: ZhouAnYan
@@ -45,21 +46,56 @@ public class RedissonUtils {
      * 但是如果遇到需要其他进程也能解锁的情况，请使用分布式信号量Semaphore 对象
      *
      * @param lockKey key
-     * @param func     Function
-     * @return 自定义返回值
+     * @return
+     */
+    public boolean tryLock(String lockKey, Functions func) {
+        RLock lock = redissonClient.getLock(LOCK_KEY_PREFIX + lockKey);
+        return tryLock(waitTime, leaseTime, unit, lock, func);
+    }
+
+    public boolean tryLock(String lockKey, long waitTime, long leaseTime, TimeUnit unit, Functions func) {
+        RLock lock = redissonClient.getLock(LOCK_KEY_PREFIX + lockKey);
+        return tryLock(waitTime, leaseTime, unit, lock, func);
+    }
+
+    public boolean tryLock(long waitTime, long leaseTime, TimeUnit unit, RLock lock, Functions func) {
+        // 尝试加锁，最多等待30秒，上锁以后10秒自动解锁
+        boolean res;
+        try {
+            res = lock.tryLock(waitTime, leaseTime, unit);
+            if (res) {
+                func.execute();
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        } finally {
+            lock.unlock();
+        }
+        return res;
+    }
+
+    /**
+     * @param lockKey
+     * @param sup
+     * @param <T>
+     * @return 自适应返回参数
      * @throws InterruptedException
      */
-    private void tryLock(String lockKey, Functions func, RuntimeException e) throws InterruptedException {
+    public <T> T tryLock(String lockKey, Supplier<T> sup) {
         RLock lock = redissonClient.getLock(LOCK_KEY_PREFIX + lockKey);
-        lock(lockKey, lock, func, e);
-    }
-
-    public void tryLock(String lockKey, Functions func) throws InterruptedException {
-        tryLock(lockKey, func, new RuntimeException("没抢到锁 抛出一个异常"));
-    }
-
-    public void add(String lockKey, Functions func) throws InterruptedException {
-        tryLock(lockKey, func, new RuntimeException("没抢到锁 抛出一个异常"));
+        // 尝试加锁，最多等待30秒，上锁以后10秒自动解锁
+        try {
+            boolean tryLock = lock.tryLock(waitTime, leaseTime, unit);
+            if (tryLock) {
+                return sup.get();
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } finally {
+            lock.unlock();
+        }
+        return null;
     }
 
     /**
@@ -67,13 +103,12 @@ public class RedissonUtils {
      *
      * @param lockKey
      * @param func
-     * @param e
      * @return
      * @throws InterruptedException
      */
-    private void fairLock(String lockKey, Functions func, RuntimeException e) throws InterruptedException {
-        RLock lock = redissonClient.getFairLock(LOCK_KEY_PREFIX + lockKey);
-        lock(lockKey, lock, func, e);
+    public boolean tryFairLock(String lockKey, Functions func) {
+        RLock rLock = redissonClient.getFairLock(LOCK_KEY_PREFIX + lockKey);
+        return tryLock(waitTime, leaseTime, unit, rLock, func);
     }
 
     /**
@@ -81,44 +116,28 @@ public class RedissonUtils {
      *
      * @param lockKey
      * @param func
-     * @param e
      * @return
      * @throws InterruptedException
      */
-    private void writeLock(String lockKey, Functions func, RuntimeException e) throws InterruptedException {
+    public boolean tryWriteLock(String lockKey, Functions func) {
         RReadWriteLock lock = redissonClient.getReadWriteLock(LOCK_KEY_PREFIX + lockKey);
         RLock rLock = lock.writeLock();
-        lock(lockKey, rLock, func, e);
+        return tryLock(waitTime, leaseTime, unit, rLock, func);
     }
+
 
     /**
      * 读写锁  读锁
      *
      * @param lockKey
      * @param func
-     * @param e
      * @return
      * @throws InterruptedException
      */
-    private void readLock(String lockKey, Functions func, RuntimeException e) throws InterruptedException {
+    public boolean tryReadLock(String lockKey, Functions func) {
         RReadWriteLock lock = redissonClient.getReadWriteLock(LOCK_KEY_PREFIX + lockKey);
         RLock rLock = lock.readLock();
-        lock(lockKey, rLock, func, e);
-    }
-
-    private void lock(String lockKey, RLock lock, Functions func, RuntimeException e) throws InterruptedException {
-        // 尝试加锁，最多等待30秒，上锁以后10秒自动解锁
-        boolean res = lock.tryLock(waitTime, leaseTime, unit);
-        if (res) {
-            try {
-                log.info(Thread.currentThread().getId() + ",我抢到了一个锁." + lockKey);
-                func.execute();
-            } finally {
-                lock.unlock();
-            }
-        }
-        log.info("tryLock 没抢到锁,当前线程:{},lockKey:{}", Thread.currentThread().getId(), lockKey);
-        throw e;
+        return tryLock(waitTime, leaseTime, unit, rLock, func);
     }
 
     /**
@@ -127,23 +146,43 @@ public class RedissonUtils {
      *
      * @param lockKey
      * @param func
-     * @param e
      * @return
      * @throws InterruptedException
      */
-    private void semaphore(String lockKey, Functions func, RuntimeException e) throws InterruptedException {
+    public boolean trySemaphore(String lockKey, Functions func) {
         RSemaphore semaphore = redissonClient.getSemaphore(LOCK_KEY_PREFIX + lockKey);
         // 尝试加锁，最多等待30秒，上锁以后10秒自动解锁
-        boolean acquire = semaphore.tryAcquire(waitTime, unit);
-        if (acquire) {
-            try {
-                log.info(Thread.currentThread().getId() + ",我抢到了一个锁." + lockKey);
+        boolean tryLock;
+        try {
+            tryLock = semaphore.tryAcquire(waitTime, unit);
+            if (tryLock) {
                 func.execute();
-            } finally {
-                semaphore.release();
             }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        } finally {
+            semaphore.release();
         }
-        log.info("tryAcquire 没抢到锁,当前线程:{},lockKey:{}", Thread.currentThread().getId(), lockKey);
-        throw e;
+        return tryLock;
+    }
+
+    public void lock(String lockKey, Functions func) {
+        RLock rLock = redissonClient.getLock(LOCK_KEY_PREFIX + lockKey);
+        lock(rLock, func);
+    }
+
+    public void lock(RLock lock, Functions func) {
+        lock(leaseTime, unit, lock, func);
+    }
+
+    public void lock(long leaseTime, TimeUnit unit, RLock lock, Functions func) {
+        // 尝试加锁，一直等待，上锁以后10秒自动解锁
+        lock.lock(leaseTime, unit);
+        try {
+            func.execute();
+        } finally {
+            lock.unlock();
+        }
     }
 }
