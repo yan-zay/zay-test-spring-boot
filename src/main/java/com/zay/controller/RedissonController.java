@@ -1,6 +1,9 @@
 package com.zay.controller;
 
+import com.baomidou.mybatisplus.autoconfigure.ConfigurationCustomizer;
+import com.baomidou.mybatisplus.core.conditions.AbstractWrapper;
 import com.zay.pojo.R;
+import com.zay.utils.Functions;
 import com.zay.utils.RedissonUtils;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,6 +15,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
  * @Author: ZhouAnYan
@@ -30,17 +36,19 @@ public class RedissonController {
 
     @GetMapping("/test01")
     public R test01(String str) throws InterruptedException {
-        return redissonUtils.tryLock(str, () -> {
+/*        return redissonUtils.tryLock(str, () -> {
             System.out.println("我反手就执行一个方法14");
             return R.ok();
-        });
+        });*/
+        return R.ok();
     }
     @GetMapping("/test02")
     public R test02(String str) throws InterruptedException {
-        return redissonUtils.tryLock(str, () -> {
+/*        return redissonUtils.tryLock(str, () -> {
             System.out.println("我反手就执行一个方法15");
             return R.ok();
-        });
+        });*/
+        return R.ok();
     }
 
     @GetMapping("/test03")
@@ -77,10 +85,41 @@ public class RedissonController {
 
     @GetMapping("/test05")
     public String test05() throws InterruptedException {
-        new Thread(() -> {
+        zay01(() -> {
 
-        }).start();
+        });
+
+        zay01(() -> {
+            String aa = "01";
+            System.out.println(aa);
+            return aa;
+        });
+
 //        test0304("04");
         return "test05";
+    }
+
+    private void zay01(Functions func) {
+        func.execute();
+    }
+
+    private void zay01(Supplier func) {
+        func.get();
+    }
+
+/*    private String zay02(String str) {
+        return "str";
+    }
+    private void zay02(String str) {
+
+    }*/
+
+    @GetMapping("/test06")
+    public String test06() throws InterruptedException {
+/*        redissonUtils.tryLock("lockKey",() -> {
+
+        }, new RuntimeException(""));*/
+
+        return "test06";
     }
 }

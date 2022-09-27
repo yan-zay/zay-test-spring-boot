@@ -26,12 +26,14 @@ public class RedissonConfig {
     private String host;
     @Value("${spring.redis.port}")
     private String port;
+    @Value("${spring.redis.password}")
+    private String password;
 
     @Bean(destroyMethod="shutdown")
     public RedissonClient redisson() throws IOException {
         Config config = new Config();
 //        config.useClusterServers().addNodeAddress("redis://"+host+":"+port);//集群模式
-        config.useSingleServer().setAddress("redis://"+host+":"+port);//单服务模式
+        config.useSingleServer().setAddress("redis://"+host+":"+port).setPassword(password);//单服务模式
         return Redisson.create(config);
     }
 

@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Supplier;
 
 /**
  * @Author: ZhouAnYan
@@ -30,9 +29,10 @@ import java.util.function.Supplier;
 @Component
 public class RedissonUtils {
 
+    private final static String LOCK_KEY_PREFIX = "lock:";
+
     @Resource
     private RedissonClient redissonClient;
-
     @Value("${spring.redisson.lock.wait-time}")
     private long waitTime;
     @Value("${spring.redisson.lock.lease-time}")
@@ -43,72 +43,76 @@ public class RedissonUtils {
      * 可重入锁
      * 迭代版本：可重载抛出自定义异常
      * 但是如果遇到需要其他进程也能解锁的情况，请使用分布式信号量Semaphore 对象
+     *
      * @param lockKey key
-     * @param sup     Function
-     * @param <R>     自定义返回值
+     * @param func     Function
      * @return 自定义返回值
      * @throws InterruptedException
      */
-    private <R> R tryLock(String lockKey, Supplier<R> sup, RuntimeException e) throws InterruptedException {
-        RLock lock = redissonClient.getLock(lockKey);
-       return lock(lockKey, lock, sup, e);
+    private void tryLock(String lockKey, Functions func, RuntimeException e) throws InterruptedException {
+        RLock lock = redissonClient.getLock(LOCK_KEY_PREFIX + lockKey);
+        lock(lockKey, lock, func, e);
     }
 
-    public <R> R tryLock(String lockKey, Supplier<R> sup) throws InterruptedException {
-        return tryLock(lockKey, sup, new RuntimeException("没抢到锁 抛出一个异常"));
+    public void tryLock(String lockKey, Functions func) throws InterruptedException {
+        tryLock(lockKey, func, new RuntimeException("没抢到锁 抛出一个异常"));
+    }
+
+    public void add(String lockKey, Functions func) throws InterruptedException {
+        tryLock(lockKey, func, new RuntimeException("没抢到锁 抛出一个异常"));
     }
 
     /**
      * 公平锁
+     *
      * @param lockKey
-     * @param sup
+     * @param func
      * @param e
-     * @param <R>
      * @return
      * @throws InterruptedException
      */
-    private <R> R fairLock(String lockKey, Supplier<R> sup, RuntimeException e) throws InterruptedException {
-        RLock lock = redissonClient.getFairLock(lockKey);
-        return lock(lockKey, lock, sup, e);
+    private void fairLock(String lockKey, Functions func, RuntimeException e) throws InterruptedException {
+        RLock lock = redissonClient.getFairLock(LOCK_KEY_PREFIX + lockKey);
+        lock(lockKey, lock, func, e);
     }
 
     /**
      * 读写锁  写锁
+     *
      * @param lockKey
-     * @param sup
+     * @param func
      * @param e
-     * @param <R>
      * @return
      * @throws InterruptedException
      */
-    private <R> R writeLock(String lockKey, Supplier<R> sup, RuntimeException e) throws InterruptedException {
-        RReadWriteLock lock = redissonClient.getReadWriteLock(lockKey);
+    private void writeLock(String lockKey, Functions func, RuntimeException e) throws InterruptedException {
+        RReadWriteLock lock = redissonClient.getReadWriteLock(LOCK_KEY_PREFIX + lockKey);
         RLock rLock = lock.writeLock();
-        return lock(lockKey, rLock, sup, e);
+        lock(lockKey, rLock, func, e);
     }
 
     /**
      * 读写锁  读锁
+     *
      * @param lockKey
-     * @param sup
+     * @param func
      * @param e
-     * @param <R>
      * @return
      * @throws InterruptedException
      */
-    private <R> R readLock(String lockKey, Supplier<R> sup, RuntimeException e) throws InterruptedException {
-        RReadWriteLock lock = redissonClient.getReadWriteLock(lockKey);
+    private void readLock(String lockKey, Functions func, RuntimeException e) throws InterruptedException {
+        RReadWriteLock lock = redissonClient.getReadWriteLock(LOCK_KEY_PREFIX + lockKey);
         RLock rLock = lock.readLock();
-        return lock(lockKey, rLock, sup, e);
+        lock(lockKey, rLock, func, e);
     }
 
-    private  <R> R lock(String lockKey, RLock lock, Supplier<R> sup, RuntimeException e) throws InterruptedException {
+    private void lock(String lockKey, RLock lock, Functions func, RuntimeException e) throws InterruptedException {
         // 尝试加锁，最多等待30秒，上锁以后10秒自动解锁
         boolean res = lock.tryLock(waitTime, leaseTime, unit);
         if (res) {
             try {
                 log.info(Thread.currentThread().getId() + ",我抢到了一个锁." + lockKey);
-                return sup.get();
+                func.execute();
             } finally {
                 lock.unlock();
             }
@@ -120,21 +124,21 @@ public class RedissonUtils {
     /**
      * 分布式信号量
      * 信号量:也可以用作限流
+     *
      * @param lockKey
-     * @param sup
+     * @param func
      * @param e
-     * @param <R>
      * @return
      * @throws InterruptedException
      */
-    private  <R> R semaphore(String lockKey, Supplier<R> sup, RuntimeException e) throws InterruptedException {
-        RSemaphore semaphore = redissonClient.getSemaphore(lockKey);
+    private void semaphore(String lockKey, Functions func, RuntimeException e) throws InterruptedException {
+        RSemaphore semaphore = redissonClient.getSemaphore(LOCK_KEY_PREFIX + lockKey);
         // 尝试加锁，最多等待30秒，上锁以后10秒自动解锁
         boolean acquire = semaphore.tryAcquire(waitTime, unit);
         if (acquire) {
             try {
                 log.info(Thread.currentThread().getId() + ",我抢到了一个锁." + lockKey);
-                return sup.get();
+                func.execute();
             } finally {
                 semaphore.release();
             }
